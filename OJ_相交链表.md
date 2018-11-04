@@ -31,7 +31,7 @@
 
 <font color = red size = 5>思路:</font>
 
-​	这道题有两个思路，一个是用链表，另一个用栈。
+​	这道题有两个思路，一个是用链表，另一个用队列。
 
 **链表：**
 
@@ -108,6 +108,86 @@ struct ListNode *getIntersectionNode(struct ListNode *headA, struct ListNode *he
 
 **用栈实现：**
 
-​	将两条链表的元素分别入到两个栈里，计算出两个栈的大小，如果两个栈的大小不相同，pop出比较大的栈突出的元素，直到两个栈的元素相同，再同时pop出两个栈元素，同时比较这两个元素对应值是否相同，如果相同，就找到了相交链表结点，否则，返回NULL。
+​	利用队列先进先出（FIFO， First-In-First-Out）的性质，在队尾插入，在队首删除数据。
+
+​	将两条链表的元素分别入到两个队里，计算出两个队列的大小，如果两个队列的大小不相同，pop出比较长队列突出的元素，直到两个队列的**长度**相同，再循环同时从队首pop出两个队列的元素，比较这两个元素对应值是否相同，如果相同，就找到了相交链表结点，否则，返回NULL。
+
+~~~c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+#include <Queue.h>
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        
+        queue <struct ListNode*> p;
+        queue <struct ListNode*> q;
+        struct ListNode* a = headA;
+        struct ListNode* b = headB;
+        
+        if(a == NULL || NULL == b)
+            return NULL;
+        
+        while(a){
+            p.push(a);
+            a = a->next;
+        }
+        
+        while(b){
+            q.push(b);
+            b = b->next;
+        }
+        
+        int size_a = p.size();
+        int size_b = q.size();
+        
+        int c = 0;
+        
+        if(size_a > size_b){
+            c = size_a - size_b;
+            while(c && p.front() != NULL){
+                p.pop();
+                c--;
+            }
+        }
+        else if (size_a < size_b){
+            c = size_b - size_a;
+            while(c && q.front() != NULL){
+                q.pop();
+                c--;
+            }
+        }
+        
+        printf("-2");
+        
+        while(p.empty() != 1 && q.empty() != 1){
+            if(p.front()->val == q.front()->val){
+                return p.front();
+            }  
+            p.pop();
+            q.pop();
+        }
+         
+        return NULL;
+    }
+    
+};
+~~~
 
 *这两种情况中相同的地方，是要先判断这两条链表是否为空，如果有一个为空，则返回NULL，如果遍历完两条链表，或者两个栈的元素都被pop空，也没有对应相同的结点，也返回NULL*
+
+**如果链表相交，可定有重叠的部分，这里的思想都是保留重叠的部分，先从不相同的部分开始，保证两条链表的长度相同，再同时pop出元素，这样总会遇见第一个重合（即相交）的点。**
+
+​	第二个思路也可以用栈实现，但是要逆向将链表入栈。
+
+*Tips:*
+
+- if 语句一定要带括号，标准规范
+- 自己实现的函数要和库里的函数接口尽量一致，特别是在判断循终止条件时十分重要。
+- 在OJ上学会加一些printf语句，来测试自己的代码的某一部分是否执行了，**但不要破坏程序本来的结构和执行顺序**。
