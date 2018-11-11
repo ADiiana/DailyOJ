@@ -19,3 +19,70 @@
 
 ​	函数返回ret->next;即可。
 
+<font color = purple size = 4>代码中遇到的BUG:</font>
+
+- tmp必须要给定一个值，再进行向下的遍历，不然是随机值，可能进入死循环。
+- 要考虑，如果有一个链表为空，这个时候直接返回那个不为空的链表即可。
+
+- 记录链表的头指针，便于返回。
+
+~~~C
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */
+struct ListNode* mergeTwoLists(struct ListNode* l1, struct ListNode* l2) {
+        
+    struct ListNode* tmp = NULL;
+    struct ListNode* ret = tmp;
+    
+    if(l1 == NULL || l2 == NULL){
+        if(l1){
+            return l1;
+        } 
+        if(l2){
+            return l2;
+        }
+    }
+    if(l1 == NULL && l2 == NULL){
+        return NULL;
+    }
+    if(l1->val < l2->val){
+        tmp = l1;			//一定要先给tmp赋一个值
+        printf("hello");
+        l1 = l1->next;
+    }
+    else{
+        printf("1 ");
+        tmp = l2;
+        l2 = l2->next;
+    }
+    ret = tmp;
+    while(l1 != NULL && l2 != NULL){
+        if(l1->val < l2->val){
+            printf("2 ");
+            tmp->next = l1;
+            tmp = tmp->next;
+            l1 = l1->next;
+            
+        }else{
+            printf("3 ");
+            tmp->next = l2;
+            l2 = l2->next;
+            tmp = tmp->next;
+        }
+    }
+    if(l1 != NULL){
+        tmp->next = l1;
+    }
+    if(l2 != NULL){
+        tmp->next = l2;
+    }
+    printf("%d", tmp->val);
+    return ret;
+}
+~~~
+
