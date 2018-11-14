@@ -56,48 +56,44 @@ OJ链接：[根据一棵树的前序遍历与中序遍历构造二叉树。](htt
  *     struct TreeNode *right;
  * };
  */
-/**
- * Return an array of size *returnSize.
- * Note: The returned array must be malloced, assume caller calls free().
- */
-
-
-int* preorderTraversal(struct TreeNode* root, int* returnSize) {
-    //递归多少次，数组就有多大。
-    *returnSize = myreturnSize(root);       //一定要注意人家给的函数接口
-    int Size = *returnSize;     
-    int* array = (int*)malloc(sizeof(int)*Size);
-    int index = 0;
+struct TreeNode* _buildTree(int* preorder, int* inorder, int* pindex, int inbegin, int inend){
+    //如果是叶子节点，则为空
+    if(inbegin > inend){
+     
+        return NULL;
+    }
+    struct TreeNode* Tree = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    Tree->left = NULL;
+    Tree->right = NULL;
+    Tree->val = preorder[*pindex];
+    //不是叶子节点，就要先构造这棵树
+    int rootindex = 0;
     
-    _pre(root, array, &index);
-    int i = 0;
-    
-    for(; i < Size; i++){
-        printf("%d ",array[i]);
+    //在中序遍历的数组中找 Tree->val 的值，以此来判断他有没有左右孩子
+    for(; rootindex <= inend; rootindex++){
+        if(Tree->val == inorder[rootindex])
+            break;       //给根结点赋值，再去判断其左右节点。
     }
     
-    if(array == NULL)
-        printf("4");
+    //分别判断左右孩子
+    if(rootindex - 1 >= inbegin){    //左孩子
+        (*pindex)++;
+        Tree->left = _buildTree(preorder, inorder, pindex, inbegin, rootindex - 1);
+    }
     
-    return array;
+    if(rootindex + 1 <= inend){    //右孩子
+        (*pindex)++;
+        Tree->right = _buildTree(preorder, inorder, pindex, rootindex + 1, inend);
+    }
+    
+    return Tree;
 }
-
-void _pre(struct TreeNode* root, int* array, int* pindex){
-    if(root == NULL)
-        return;
-    array[*pindex] = root->val;
-   // printf("%d ", root->val);
-    (*pindex)++;
-    _pre(root->left, array, pindex);
-    _pre(root->right, array, pindex);
+struct TreeNode* buildTree(int* preorder, int preorderSize, int* inorder, int inorderSize) {
+    int index = 0;
+    struct TreeNode* tree = _buildTree(preorder, inorder, &index, 0, inorderSize-1);
+    
+    return tree;
 }
-
-int myreturnSize(struct TreeNode* root){
-    if(root == NULL)
-        return 0;
-    return 1 + myreturnSize(root->left) + myreturnSize(root->right);
-}
-
 ~~~
 
 
