@@ -26,9 +26,21 @@
 
 <font size = 5 color = red>思路：</font>
 
+**思路一：**
+
 倒置由栈的性质可以想到，在操作string函数时一定要注意边界问题，以及最后的输出问题。
 
 理解cin 和getline的区别。
+
+**思路二：**
+
+使用库函数，先将整个字符串翻转，再对每个单词逐个翻转
+
+**思路三：**
+
+逐单词读取，同两个字符串，一个字符串逆序存储，并输出。
+
+**代码一：**
 
 ~~~C
 //以空格为分割线，入栈。用一个栈实现倒置。
@@ -73,6 +85,57 @@ int main(){
     ret.erase(ret.size() - 1);
 	cout << ret;
 	system("pause");
+	return 0;
+}
+~~~
+
+**代码2：**
+
+~~~C
+
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+int main()
+{
+	string s;
+	getline(cin, s));
+	// 翻转整个句子
+	reverse(s.begin(), s.end());
+	// 翻转单词
+	auto start = s.begin();
+	while (start != s.end())
+	{
+		auto end = start;
+		while (end != s.end() && *end != ' ')
+			end++;
+		reverse(start, end);
+		if (end != s.end())
+			start = end + 1;
+		else
+			start = end;
+	}
+	cout << s << endl;
+	return 0;
+}
+~~~
+
+**代码3：**
+
+~~~C
+#include <iostream>
+#include <string>
+using namespace std;
+// cin读取string时自动会被空格分隔开，用另一个字符串存储进行逆序输出
+int main()
+{
+	string s1, s2;
+	cin >> s2;
+	while (cin >> s1)
+		s2 = s1 + " " + s2;
+	cout << s2 << endl;
 	return 0;
 }
 ~~~
