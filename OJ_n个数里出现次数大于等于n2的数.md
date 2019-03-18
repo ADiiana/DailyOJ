@@ -74,6 +74,26 @@ int main(){
 }
 ~~~
 
+or
+
+~~~C
+#include<iostream>
+using namespace std;
+int main(){
+	int count[100] = { 0 };//数组置0，然后输入n，则对应位置加1，最后遍历数组
+	int x = 0, n = 0; //找到大于等于一半次数的那个
+	while (cin >> x){
+		count[x]++;
+		n++;
+	}
+	for (int i = 0; i<n; i++){
+		if (count[i] >= n / 2)
+			cout << i << endl;
+	}
+	return 0;
+}
+~~~
+
 **代码二：**
 
 ~~~C
@@ -104,6 +124,8 @@ int main()
 	return 0;
 }
 ~~~
+
+
 
 
 
